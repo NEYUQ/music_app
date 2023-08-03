@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 
 class DashBoardController extends GetxController {
+
+  
+
   RxDouble timeLineAudio = 0.0.obs;
 
   ///

@@ -14,7 +14,7 @@ class DashBoardPage extends GetView<DashBoardController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      drawer: const Drawer(),
+      drawer: _drawer(),
       body: _body(),
       bottomSheet: GestureDetector(
         onTap: () {
@@ -43,6 +43,66 @@ class DashBoardPage extends GetView<DashBoardController> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+  ///
+  /// Drawer.
+  ///
+  Drawer _drawer() {
+    return Drawer(
+      backgroundColor: ColorApp.PRIMARY_COLOR,
+      child: Padding(
+        padding: SizeUtil.setEdgeInsetsSymmetric(
+          horizontal: SizeUtil.SPACE_3X,
+          vertical: SizeUtil.SPACE_2X,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: Icon(
+                Icons.close,
+                color: ColorApp.WHITE,
+                size: 40,
+              ),
+            ),
+            SizedBox(
+              height: SizeUtil.setSize(percent: 0.05),
+            ),
+            ListView.builder(
+              itemCount: 6,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.people,
+                        color: const Color(0xff8996B8).withOpacity(.6),
+                        size: 30,
+                      ),
+                      const SizedBox(
+                        width: SizeUtil.SPACE_5X,
+                      ),
+                      Text(
+                        "Profile",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: SizeUtil.MEDIUM_LABEL_FONT_SIZE,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -130,6 +190,7 @@ class DashBoardPage extends GetView<DashBoardController> {
   ///
   Widget _iconsPlayingAudio({double? size}) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Icon(
           Icons.skip_previous_outlined,
@@ -157,6 +218,7 @@ class DashBoardPage extends GetView<DashBoardController> {
     return Column(
       children: [
         const Expanded(
+          // Home page.
           child: HomePage(),
         ),
         SizedBox(
@@ -198,32 +260,29 @@ class DashBoardPage extends GetView<DashBoardController> {
                 ),
                 Padding(
                   padding: SizeUtil.setEdgeInsetsSymmetric(
-                    horizontal: SizeUtil.SPACE_1X,
+                    horizontal: SizeUtil.SPACE_2X,
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Icon(
-                        Icons.volume_down_outlined,
-                        color: const Color(0xff8996B8).withOpacity(.6),
-                        size: 30,
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.restore,
-                        color: const Color(0xff8996B8).withOpacity(.6),
-                        size: 30,
-                      ),
+                      // Icon next, return, shuffle.
+                      _iconNextReturnShuffle(),
                       const SizedBox(
-                        width: SizeUtil.SPACE_1X,
+                        height: SizeUtil.SPACE_5X * 2,
                       ),
-                      Icon(
-                        Icons.shuffle,
-                        color: const Color(0xff8996B8).withOpacity(.6),
-                        size: 30,
-                      ),
+                      // text time line.
+                      _textTimeLine(),
                       const SizedBox(
-                        width: SizeUtil.SPACE_1X,
+                        height: SizeUtil.SPACE_5X,
                       ),
+                      // Progress time line.
+                      _slider(),
+                      const SizedBox(
+                        height: SizeUtil.SPACE_5X * 2,
+                      ),
+                      // Icon play next or previous.
+                      _iconsPlayingAudio(
+                        size: 60,
+                      )
                     ],
                   ),
                 ),
@@ -232,6 +291,61 @@ class DashBoardPage extends GetView<DashBoardController> {
           ),
         );
       },
+    );
+  }
+
+  ///
+  /// Text time line.
+  ///
+  Widget _textTimeLine() {
+    return Row(
+      children: const [
+        Text(
+          "00:50",
+          style: TextStyle(
+            color: Color(0xffA5C0FF),
+          ),
+        ),
+        Spacer(),
+        Text(
+          "00:50",
+          style: TextStyle(
+            color: Color(0xffA5C0FF),
+          ),
+        ),
+      ],
+    );
+  }
+
+  ///
+  /// Icon next return and shuffle.
+  ///
+  Widget _iconNextReturnShuffle() {
+    return Row(
+      children: [
+        Icon(
+          Icons.volume_down_outlined,
+          color: const Color(0xff8996B8).withOpacity(.6),
+          size: 25,
+        ),
+        const Spacer(),
+        Icon(
+          Icons.restore,
+          color: const Color(0xff8996B8).withOpacity(.6),
+          size: 25,
+        ),
+        const SizedBox(
+          width: SizeUtil.SPACE_2X,
+        ),
+        Icon(
+          Icons.shuffle,
+          color: const Color(0xff8996B8).withOpacity(.6),
+          size: 25,
+        ),
+        const SizedBox(
+          width: SizeUtil.SPACE_1X,
+        ),
+      ],
     );
   }
 
