@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_app/data/model/audio_model/audio_model.dart';
 
 class DashBoardController extends GetxController {
   RxBool isPlaying = false.obs;
-  final player = AudioPlayer();
+  AudioPlayer player = AudioPlayer();
   Duration duration = const Duration();
   Duration position = Duration.zero;
+  RxBool isHasMusic = false.obs;
+  AudioModel? audioModel;
   @override
   void onInit() {
     super.onInit();
@@ -23,28 +28,47 @@ class DashBoardController extends GetxController {
     super.onClose();
     isPlaying.close();
   }
+
   ///
   /// Init value.
   ///
-  Future<void> initValue() async {
-    player.setAsset('assets/audio/nang_ougest.mp3').then((value) {
-      if (value != null) {
-        duration = value;
-        isPlaying.value = true;
-        player.play();
+  Future<void> initValue({String? url, AudioModel? audio}) async {
+    if (url != null && audio != null) {
+      isHasMusic.value = true;
+      player.dispose();
+      player = AudioPlayer();
+      audioModel = audio;
+      update(['ID_ALL_MUSIC']);
+      player.setAsset(url).then((value) {
+        if (value != null) {
+          position = Duration.zero;
+          duration = value;
+          isPlaying.value = true;
+          player.play();
 
-        // Declare a stream of audio.
-        player.positionStream.listen((event) {
-          if (position < duration) {
-            position = position + const Duration(milliseconds: 200);
-            update(['ID_SLIDER_AUDIO']);
-          } else {
-            isPlaying.value = false;
-            player.pause();
-          }
-        });
-      }
-    });
+          // Declare a stream listen value of audio.
+          late StreamSubscription<Duration> subscriptionPosition;
+          subscriptionPosition = player.positionStream.listen((event) {
+            if (position < duration) {
+              position = position + const Duration(milliseconds: 200);
+              update(['ID_SLIDER_AUDIO']);
+            } else {
+              isPlaying.value = false;
+              player.pause();
+              subscriptionPosition.cancel();
+            }
+          });
+
+          // Update when duration change.
+          player.durationStream.listen((event) {
+            if (event != null) {
+              duration = event;
+              update(['ID_SLIDER_AUDIO']);
+            }
+          });
+        }
+      });
+    }
   }
 
   ///

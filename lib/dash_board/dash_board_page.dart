@@ -16,34 +16,42 @@ class DashBoardPage extends GetView<DashBoardController> {
       appBar: _appBar(),
       drawer: _drawer(),
       body: _body(),
-      bottomSheet: GestureDetector(
-        onTap: () {
-          // Show screen bottom sheet.
-          showScreenBottomSheet(context);
-        },
-        child: Container(
-          color: ColorApp.PRIMARY_COLOR,
-          height: SizeUtil.getMaxHeight() * 0.11,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Slider.
-              _slider(),
-              Expanded(
-                child: Row(
-                  children: [
-                    // Image song.
-                    _imageSong(),
-                    // Name song and singer.
-                    _nameSong(),
-                    // Icon controller audio.
-                    _iconsPlayingAudio(),
-                  ],
+      bottomSheet: Obx(
+        () => !controller.isHasMusic.value
+            ? const SizedBox()
+            : GestureDetector(
+                onTap: () {
+                  // Show screen bottom sheet.
+                  showScreenBottomSheet(context);
+                },
+                child: Container(
+                  color: ColorApp.PRIMARY_COLOR,
+                  height: SizeUtil.getMaxHeight() * 0.11,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Slider.
+                      _slider(),
+                      GetBuilder(
+                          id: "ID_ALL_MUSIC",
+                          builder: (DashBoardController controller) {
+                            return Expanded(
+                              child: Row(
+                                children: [
+                                  // Image song.
+                                  _imageSong(),
+                                  // Name song and singer.
+                                  _nameSong(),
+                                  // Icon controller audio.
+                                  _iconsPlayingAudio(),
+                                ],
+                              ),
+                            );
+                          })
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
       ),
     );
   }
@@ -141,8 +149,15 @@ class DashBoardPage extends GetView<DashBoardController> {
           // Home page.
           child: HomePage(),
         ),
-        SizedBox(
-          height: SizeUtil.getMaxHeight() * 0.1,
+        Obx(
+          () {
+            if (!controller.isHasMusic.value) {
+              return const SizedBox();
+            }
+            return SizedBox(
+              height: SizeUtil.getMaxHeight() * 0.1,
+            );
+          },
         ),
       ],
     );
@@ -179,15 +194,19 @@ class DashBoardPage extends GetView<DashBoardController> {
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: const [
+        children: [
           //
           // Name song.
           TextNameSong(
-            nameSong: "Chaff & Dust",
+            nameSong: controller.audioModel != null
+                ? controller.audioModel!.nameSong
+                : "Không xác định",
           ),
           // Name singer.
           TextNameSinger(
-            nameSinger: "ERIKA RECKONS",
+            nameSinger: controller.audioModel != null
+                ? controller.audioModel!.nameSinger
+                : "Không xác định",
           ),
         ],
       ),
@@ -202,7 +221,9 @@ class DashBoardPage extends GetView<DashBoardController> {
       height: SizeUtil.getMaxHeight() * 0.08,
       width: SizeUtil.getMaxHeight() * 0.08,
       child: Image.network(
-        "https://d1j8r0kxyu9tj8.cloudfront.net/images/1566809317niNpzY2khA3tzMg.jpg",
+        controller.audioModel != null
+            ? controller.audioModel!.thumbnail
+            : "https://d1j8r0kxyu9tj8.cloudfront.net/images/1566809317niNpzY2khA3tzMg.jpg",
         fit: BoxFit.cover,
       ),
     );
@@ -311,25 +332,25 @@ class DashBoardPage extends GetView<DashBoardController> {
   /// Text time line.
   ///
   Widget _textTimeLine() {
-    return Row(
-      children: [
-        GetBuilder(
-          id: 'ID_SLIDER_AUDIO',
-          builder: (DashBoardController controller) => Text(
+    return GetBuilder(
+      id: 'ID_SLIDER_AUDIO',
+      builder: (DashBoardController controller) => Row(
+        children: [
+          Text(
             controller.audioDuration(controller.position),
             style: const TextStyle(
               color: Color(0xffA5C0FF),
             ),
           ),
-        ),
-        const Spacer(),
-        Text(
-          controller.audioDuration(controller.duration),
-          style: const TextStyle(
-            color: Color(0xffA5C0FF),
+          const Spacer(),
+          Text(
+            controller.audioDuration(controller.duration),
+            style: const TextStyle(
+              color: Color(0xffA5C0FF),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -374,19 +395,27 @@ class DashBoardPage extends GetView<DashBoardController> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Column(
-              children: const [
-                TextNameSong(
-                  nameSong: "Moment Apart",
-                ),
-                SizedBox(
-                  height: SizeUtil.SPACE_1X,
-                ),
-                TextNameSinger(
-                  nameSinger: "ODEZA",
-                ),
-              ],
-            ),
+            GetBuilder(
+                id: 'ID_ALL_MUSIC',
+                builder: (DashBoardController controller) {
+                  return Column(
+                    children: [
+                      TextNameSong(
+                        nameSong: controller.audioModel != null
+                            ? controller.audioModel!.nameSong
+                            : "Không xác định",
+                      ),
+                      const SizedBox(
+                        height: SizeUtil.SPACE_1X,
+                      ),
+                      TextNameSinger(
+                        nameSinger: controller.audioModel != null
+                            ? controller.audioModel!.nameSinger
+                            : "Không xác định",
+                      ),
+                    ],
+                  );
+                }),
           ],
         ),
         Positioned(
