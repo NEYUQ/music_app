@@ -9,18 +9,22 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+    # size.
+  flutter_screenutil: ^5.7.0
+  # state management.
+  get: ^4.6.5
+  # sliders.
+  carousel_slider: ^4.2.1
+
+  # audio player.
+  just_audio: ^0.9.34
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
     
   flutter_lints: ^2.0.0
-  # size.
-  flutter_screenutil: ^5.7.0
-  # state management.
-  get: ^4.6.5
-  # sliders.
-  carousel_slider: ^4.2.1
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -38,6 +42,7 @@ flutter:
     # - assets/images
     - assets/icons/
     - assets/images/
+    - assets/audio/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -36,7 +36,6 @@ class HomePage extends GetView<HomeController> {
                   title: "My Playlist",
                   isPlaylist: true,
                 ),
-
               ],
             ),
           ),
@@ -117,7 +116,7 @@ class HomePage extends GetView<HomeController> {
                           // Name actor.
                           TextNameSinger(nameSinger: "ERIKA RECKONS"),
                         ],
-                      )
+                      ),
                   ],
                 ),
               );

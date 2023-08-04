@@ -47,87 +47,6 @@ class DashBoardPage extends GetView<DashBoardController> {
       ),
     );
   }
-  ///
-  /// Drawer.
-  ///
-  Drawer _drawer() {
-    return Drawer(
-      backgroundColor: ColorApp.PRIMARY_COLOR,
-      child: Padding(
-        padding: SizeUtil.setEdgeInsetsSymmetric(
-          horizontal: SizeUtil.SPACE_3X,
-          vertical: SizeUtil.SPACE_2X,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Get.back();
-              },
-              child: Icon(
-                Icons.close,
-                color: ColorApp.WHITE,
-                size: 40,
-              ),
-            ),
-            SizedBox(
-              height: SizeUtil.setSize(percent: 0.05),
-            ),
-            ListView.builder(
-              itemCount: 6,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.people,
-                        color: const Color(0xff8996B8).withOpacity(.6),
-                        size: 30,
-                      ),
-                      const SizedBox(
-                        width: SizeUtil.SPACE_5X,
-                      ),
-                      Text(
-                        "Profile",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: SizeUtil.MEDIUM_LABEL_FONT_SIZE,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  ///
-  /// Slider.
-  ///
-  Widget _slider() {
-    return Obx(
-      () => SliderTheme(
-        data: SliderThemeData(
-          overlayShape: SliderComponentShape.noThumb,
-        ),
-        child: Slider(
-          value: controller.timeLineAudio.value,
-          onChanged: (value) {
-            controller.onChangeTimeLineAudio(value);
-          },
-          activeColor: ColorApp.WHITE,
-          inactiveColor: ColorApp.WHITE.withOpacity(.31),
-        ),
-      ),
-    );
-  }
 
   ///
   /// App bar.
@@ -146,6 +65,110 @@ class DashBoardPage extends GetView<DashBoardController> {
           width: SizeUtil.SPACE_6X,
         ),
       ],
+    );
+  }
+
+  ///
+  /// Drawer.
+  ///
+  Drawer _drawer() {
+    return Drawer(
+      backgroundColor: ColorApp.PRIMARY_COLOR,
+      child: SafeArea(
+        child: Padding(
+          padding: SizeUtil.setEdgeInsetsSymmetric(
+            horizontal: SizeUtil.SPACE_3X,
+            vertical: SizeUtil.SPACE_2X,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: Icon(
+                  Icons.close,
+                  color: ColorApp.WHITE,
+                  size: 40,
+                ),
+              ),
+              SizedBox(
+                height: SizeUtil.setSize(percent: 0.05),
+              ),
+              ListView.builder(
+                itemCount: 6,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.people,
+                          color: const Color(0xff8996B8).withOpacity(.6),
+                          size: 30,
+                        ),
+                        const SizedBox(
+                          width: SizeUtil.SPACE_5X,
+                        ),
+                        Text(
+                          "Profile",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: SizeUtil.MEDIUM_LABEL_FONT_SIZE,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  ///
+  /// Body of page.
+  ///
+  Widget _body() {
+    return Column(
+      children: [
+        const Expanded(
+          // Home page.
+          child: HomePage(),
+        ),
+        SizedBox(
+          height: SizeUtil.getMaxHeight() * 0.1,
+        ),
+      ],
+    );
+  }
+
+  ///
+  /// Slider.
+  ///
+  Widget _slider() {
+    return GetBuilder(
+      id: "ID_SLIDER_AUDIO",
+      builder: (DashBoardController controller) => SliderTheme(
+        data: SliderThemeData(
+          overlayShape: SliderComponentShape.noThumb,
+        ),
+        child: Slider(
+          value: controller.position.inSeconds.toDouble(),
+          onChanged: (value) {
+            controller.onChangeTimeLineAudio(value);
+          },
+          activeColor: ColorApp.WHITE,
+          inactiveColor: ColorApp.WHITE.withOpacity(.31),
+          max: controller.duration.inSeconds.toDouble(),
+          min: 0,
+        ),
+      ),
     );
   }
 
@@ -189,42 +212,32 @@ class DashBoardPage extends GetView<DashBoardController> {
   /// Icon playing audio.
   ///
   Widget _iconsPlayingAudio({double? size}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Icon(
-          Icons.skip_previous_outlined,
-          color: ColorApp.WHITE,
-          size: size ?? SizeUtil.setSize(percent: 0.05),
-        ),
-        Icon(
-          Icons.pause,
-          color: ColorApp.WHITE,
-          size: size ?? SizeUtil.setSize(percent: 0.05),
-        ),
-        Icon(
-          Icons.skip_next_outlined,
-          color: ColorApp.WHITE,
-          size: size ?? SizeUtil.setSize(percent: 0.05),
-        ),
-      ],
-    );
-  }
-
-  ///
-  /// Body of page.
-  ///
-  Widget _body() {
-    return Column(
-      children: [
-        const Expanded(
-          // Home page.
-          child: HomePage(),
-        ),
-        SizedBox(
-          height: SizeUtil.getMaxHeight() * 0.1,
-        ),
-      ],
+    return Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Icon(
+            Icons.skip_previous_outlined,
+            color: ColorApp.WHITE,
+            size: size ?? SizeUtil.setSize(percent: 0.05),
+          ),
+          GestureDetector(
+            onTap: () {
+              controller.handlePlayOrPauseAudio();
+            },
+            child: Icon(
+              controller.isPlaying.value ? Icons.pause : Icons.play_arrow,
+              color: ColorApp.WHITE,
+              size: size ?? SizeUtil.setSize(percent: 0.05),
+            ),
+          ),
+          Icon(
+            Icons.skip_next_outlined,
+            color: ColorApp.WHITE,
+            size: size ?? SizeUtil.setSize(percent: 0.05),
+          ),
+        ],
+      ),
     );
   }
 
@@ -299,17 +312,20 @@ class DashBoardPage extends GetView<DashBoardController> {
   ///
   Widget _textTimeLine() {
     return Row(
-      children: const [
-        Text(
-          "00:50",
-          style: TextStyle(
-            color: Color(0xffA5C0FF),
+      children: [
+        GetBuilder(
+          id: 'ID_SLIDER_AUDIO',
+          builder: (DashBoardController controller) => Text(
+            controller.audioDuration(controller.position),
+            style: const TextStyle(
+              color: Color(0xffA5C0FF),
+            ),
           ),
         ),
-        Spacer(),
+        const Spacer(),
         Text(
-          "00:50",
-          style: TextStyle(
+          controller.audioDuration(controller.duration),
+          style: const TextStyle(
             color: Color(0xffA5C0FF),
           ),
         ),
@@ -411,6 +427,9 @@ class DashBoardPage extends GetView<DashBoardController> {
     );
   }
 
+  ///
+  /// App bar bottom sheet.
+  ///
   AppBar _appBarBottomSheet() {
     return AppBar(
       backgroundColor: ColorApp.PRIMARY_COLOR,
