@@ -5,6 +5,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_app/data/model/audio_model/audio_model.dart';
 
 class DashBoardController extends GetxController {
+  // 
+  // Declare variables.
   RxBool isPlaying = false.obs;
   AudioPlayer player = AudioPlayer();
   Duration duration = const Duration();
@@ -27,6 +29,7 @@ class DashBoardController extends GetxController {
   void onClose() {
     super.onClose();
     isPlaying.close();
+    isHasMusic.close();
   }
 
   ///
